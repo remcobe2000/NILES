@@ -1,0 +1,471 @@
+//einbinden der Bibliotheken für das
+//ansteuern des MFRC522 Moduls
+#include <SPI.h>
+#include <MFRC522.h>
+
+//definieren der Pins  RST & SDA für den ESP32
+#define RST_PIN     22
+#define SS_PIN      21
+
+//erzeugen einer Objektinstanz
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+
+//Variable zum speichern der bereits gelesenen RFID-ID
+String lastRfid = "";
+
+// Variablen zum speichern der momentan eingehängten Flaschen
+
+bool SouthernComfort = false;
+bool LadySunshine = false;
+bool Maracujasirup = false;
+bool Gingerale = false;
+bool Wodka = false;
+bool Swimmingpool = false;
+bool Sahne = false;
+bool BlueCuracao = false;
+bool Kokossirup = false;
+bool Rum = false;
+bool Ananassaft = false;
+bool Maitai = false;
+bool Mandelsirup = false;
+bool Zuckersirup = false;
+bool Orangensaft = false;
+bool WhiteRussion = false;
+bool Kaffeelikoer = false;
+bool PinaColada = false;
+bool BloodyMary = false;
+bool Tomatensaft = false;
+bool Cosmopolitan = false;
+bool Limettensaft = false;
+bool Cointreu = false;
+bool Cranberrynektar = false;
+bool Grenadine = false;
+bool Zombie = false;
+bool SOTB = false;
+bool Pfirsichlikoer = false;
+
+
+void setup()
+{
+    //beginn der seriellen Kommunikation mit 115200 Baud
+    Serial.begin(115200);
+    //eine kleine Pause von 50ms.
+    delay(50);
+    //begin der SPI Kommunikation
+    SPI.begin();
+    //initialisieren der Kommunikation mit dem RFID Modul
+    mfrc522.PCD_Init();
+}
+void loop()
+{
+    //Wenn keine neue Karte vorgehalten wurde oder die serielle Kommunikation
+    //nicht gegeben ist, dann...
+    if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial())
+    {
+        return;
+    }
+    String newRfidId = "";
+    for (byte i = 0; i < mfrc522.uid.size; i++)
+    {
+        // !! Achtung es wird ein Leerzeichen vor der ID gesetzt !!
+        newRfidId.concat(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+        newRfidId.concat(String(mfrc522.uid.uidByte[i], HEX));
+    }
+    //alle Buchstaben in Großbuchstaben umwandeln
+    newRfidId.toUpperCase();
+	
+    //Wenn die neue gelesene RFID-ID ungleich der bereits zuvor gelesenen ist,
+    //dann soll diese auf der seriellen Schnittstelle ausgegeben werden.
+	    if (!newRfidId.equals(lastRfid))
+    {
+        //überschreiben der alten ID mit der neuen
+        lastRfid = newRfidId;
+        Serial.print(" gelesene RFID-ID :");
+        Serial.println(newRfidId);
+        Serial.println();
+		
+		
+		switch (newRfidId)
+	{
+		case " fe:b0:1e:3f ":
+			{
+				bool SouthernComfort = true;
+				Serial.print ("Southern Comfort");
+				break;
+			}
+		case " 5b:7f:7f:3b ":
+			{
+				bool Pfirsichlikoer = true;
+				Serial.print ("Pfirsichlikör");
+				break;
+			}
+		case " 7b:77:2e:3b ":
+			{
+				bool Grenadine = true;
+				Serial.print ("Grenadinensirup");
+				break;
+			}
+		case " 9b:b4:45:3b ":
+			{
+				bool Cointreu = true;
+				Serial.print ("Cointreu");
+				break;
+			}
+		case " 6b:0b:77:3b ":
+			{
+				bool Cranberrynektar = true;
+				Serial.print ("Cranberrynektar");
+				break;
+			}
+		case " 9b:fb:7b:3b ":
+			{
+				bool Limettensaft = true;
+				Serial.print ("Limettensaft");
+				break;
+			}	
+		case " 7b:55:ff:3b ":
+			{
+				bool Tomatensaft = true;
+				Serial.print ("Tomatensaft");
+				break;
+			}	
+		case " 5e:5a:21:3f ":
+			{
+				bool Kaffeelikoer = true;
+				Serial.print ("Kaffeelikör");
+				break;
+			}	
+		case " fa.e6:b3:d3 ":
+			{
+				bool Orangensaft = true;
+				Serial.print ("Orangensaft");
+				break;
+			}	
+		case " fe:5f:2b:3f ":
+			{
+				bool Zuckersirup = true;
+				Serial.print ("Zuckersirup");
+				break;
+			}
+		case " 7a:42:b6:d3 ":
+			{
+				bool Mandelsirup = true;
+				Serial.print ("Mandelsirup");
+				break;
+			}
+		case " 8a:50:b4:d3 ":
+			{
+				bool Ananassaft = true;
+				Serial.print ("Ananassaft");
+				break;
+			}
+		case " ea:00:a9:d3 ":
+			{
+				bool Rum = true;
+				Serial.print ("Rum");
+				break;
+			}
+		case " fa:bf:ae:d3 ":
+			{
+				bool Kokossirup = true;
+				Serial.print ("Kokossirup");
+				break;
+			}
+		case " 4b:46:be:3b ":
+			{
+				bool BlueCuracao = true;
+				Serial.print ("Blue Curacao");
+				break;
+			}
+		case " 4b:12:5c:3b ":
+			{
+				bool Sahne = true;
+				Serial.print ("Sahne");
+				break;
+			}
+		case " 7b:9d:67:3b ":
+			{
+				bool Wodka = true;
+				Serial.print ("Wodka");
+				break;
+			}
+		case " ee:22:24:3f ":
+			{
+				bool Maracujasirup = true;
+				Serial.print ("Maracujasirup");
+				break;
+			}
+		case " 6b:54:51:3b ":
+			{
+				bool Gingerale = true;
+				Serial.print ("Gingerale");
+				break;
+			}
+		case " 5b:f9:8d:3b ":
+			{
+				// SOTB:
+				if (Pfirsichlikoer == true && Cranberrynektar == true && Orangensaft == true && Wodka == true)
+				{
+				Serial.print ("Sex on the Beach wird zubereitet");
+				}
+				else
+				{
+					if (Pfirsichlikoer == false)
+					{
+					Serial.println("Pfirsichlikoer fehlt.");
+					}
+		
+					if (Cranberrynektar == false)
+					{
+					Serial.println("Cranberrynektar fehlt.");
+					}
+		
+					if (Orangensaft == false)
+					{
+					Serial.println("Orangensaft fehlt.");
+					}
+		
+					if (Wodka == false)
+					{
+					Serial.println("Wodka fehlt.");
+					}
+				}
+				
+				break;
+			}
+		case " 4b:ab:60:3b ":
+			{
+				// Cosmopolitan:
+				if (Limettensaft == true && Cointreu == true && Cranberrynektar == true && Wodka == true)
+				{
+				Serial.print ("Cosmopolitan wird zubereitet");
+				}
+				else	
+					{
+						if (Limettensaft == false)
+						{
+						Serial.println("Limettensaft fehlt.");
+						}
+		
+						if (Cointreu == false)
+						{
+						Serial.println("Cointreu fehlt.");
+						}
+		
+						if (Cranberrynektar == false)
+						{
+						Serial.println("Cranberrynektar fehlt.");
+						}
+			
+						if (Wodka == false)
+						{
+						Serial.println("Wodka fehlt.");
+						}
+					}
+				break;
+			}
+		case " 3b:e4:e3:3b ":
+			{
+				// BloodyMary:
+				if (Tomatensaft == true && Wodka == true)
+				{
+				Serial.print ("Bloody Mary wird zubereitet");
+				}
+				else
+					{
+						if (Tomatensaft == false)
+						{
+						Serial.println("Tomatensaft fehlt.");
+						}
+			
+						if (Wodka == false)
+						{
+						Serial.println("Wodka fehlt.");
+						}
+				
+			}
+				break;
+			}
+		case " 9b:bd:29:3b ":
+			{
+				
+				// PinaColada:
+				if (Kokossirup == true && Rum == true && Wodka == true)
+				{
+				Serial.print ("Pina Colada wird zubereitet");
+				}
+				
+				else
+					{
+						if (Kokossirup == false)
+						{
+						Serial.println("Kokossirup fehlt.");
+						}
+		
+						if (Rum == false)
+						{
+						Serial.println("Rum fehlt.");
+						}
+		
+						if (Wodka == false)
+						{
+						Serial.println("Wodka fehlt.");
+						}
+					}
+				
+				break;
+			}
+			
+		case " 9b:3d:f9:3b ":
+			{
+				// Lady Sunshine:
+				if (SouthernComfort == true && Maracujasirup == true %% Gingerale == true && Wodka == true)
+				{
+				Serial.print ("Lady Sunshine wird zubereitet");
+				}	
+				else 
+				{
+					if (SouthernComfort == false)
+					{
+					Serial.println("Southern Comfort fehlt.");
+					}
+		
+					if (Maracujasirup == false)
+					{
+					Serial.println("Maracujasirup fehlt.");
+					}
+				}
+					break;
+			}
+			
+		case " 3b:92:60:3b ":
+			{
+			// Swimmingpool:
+				if (Sahne == true && BlueCuracao == true && Kokossirup == true && Ananassaft == true && Wodka == true)
+				{
+				Serial.print ("Swimmingpool wird zubereitet");
+				}
+				
+				else
+					{
+						if (Sahne == false)
+						{
+						Serial.println("Sahne fehlt.");
+						}
+			
+						if (BlueCuracao == false)
+						{
+							Serial.println("BlueCuracao fehlt.");
+						}
+		
+						if (Kokossirup == false)
+						{
+							Serial.println("Kokossirup fehlt.");
+						}
+		
+						if (Ananassaft == false)
+						{
+							Serial.println("Ananassaft fehlt.");
+						}
+		
+						if (Wodka == false)
+						{
+							Serial.println("Wodka fehlt.");
+						}
+					}
+					break;
+			}
+			
+		case " aa:a7:a4:d3 ":
+			{
+				// Maitai:
+				if (Mandelsirup == true && Zuckersirup == true && Ananassaft == true && Orangensaft == true && Rum == true)
+				{
+				Serial.print ("Mai Tai wird zubereitet");
+				}	
+
+				else
+				{
+					if (Mandelsirup == false)
+					{
+						Serial.println("Mandelsirup fehlt.");
+					}
+			
+					if (Zuckersirup == false)
+					{
+						Serial.println("Zuckersirup fehlt.");
+					}
+		
+					if (Kokossirup == false)
+					{
+						Serial.println("Kokossirup fehlt.");
+					}
+		
+					if (Ananassaft == false)
+					{
+						Serial.println("Ananassaft fehlt.");
+					}
+			
+					if (Orangensaft == false)
+					{
+						Serial.println("Orangensaft fehlt.");
+					}
+		
+					if (Rum == false)
+					{
+						Serial.println("Rum fehlt.");
+					}
+
+				}
+				
+				break;
+
+			}
+		case " 1e:18:20:3f ":
+			{
+				// WhiteRussion::
+				if ((Sahne == true && Kaffeelikoer == true && Wodka == true)
+				{
+				Serial.print ("White Russion wird zubereitet");
+				}	
+
+				else
+				{
+					if (Sahne == false)
+					{
+						Serial.println("Sahne fehlt.");
+					}
+			
+					if (Kaffeelikoer == false)
+					{
+						Serial.println("Kaffeelikoer fehlt.");
+					}
+		
+					if (Wodka == false)
+					{
+						Serial.println("Wodka fehlt.");
+					}
+
+				}
+				
+				break;
+
+			}
+		case " 3b:c1:40:3b ":
+			{
+				Serial.print ("Startposition erreicht");
+				break;
+			}
+		case " 9b:58:36:3b ":
+			{
+				Serial.print ("Zielposition erreicht");
+				break;
+			}
+
+	}
+			
+		}
+}
+
+
+		
